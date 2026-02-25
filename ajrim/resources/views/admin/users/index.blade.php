@@ -3,88 +3,96 @@
 @section('page-title', 'Foydalanuvchilar')
 
 @section('content')
-    <div class="section-sarlavha">
-        <h2>👥 Foydalanuvchilar</h2>
-        <a href="{{ route('admin.users.create') }}" class="btn btn-asosiy">+ Yangi foydalanuvchi</a>
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold text-matn flex items-center gap-2">👥 Foydalanuvchilar</h2>
+        <a href="{{ route('admin.users.create') }}" class="bg-aksent hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all duration-200 transform hover:-translate-y-0.5">+ Yangi foydalanuvchi</a>
     </div>
 
     <!-- FILTER -->
-    <form method="GET" class="filter-qator">
-        <input type="text" name="search" class="form-input" placeholder="🔍 Qidirish..." value="{{ request('search') }}">
-        <select name="role" class="form-input" style="max-width:160px;">
-            <option value="">Barcha rollar</option>
-            <option value="user" {{ request('role') === 'user' ? 'selected' : '' }}>Foydalanuvchi</option>
-            <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
-        </select>
-        <select name="status" class="form-input" style="max-width:160px;">
-            <option value="">Barcha holatlar</option>
-            <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Faol</option>
-            <option value="blocked" {{ request('status') === 'blocked' ? 'selected' : '' }}>Bloklangan</option>
-        </select>
-        <button type="submit" class="btn btn-ikkinchi">Filtr</button>
-        <a href="{{ route('admin.users.index') }}" class="btn btn-ikkinchi">Tozalash</a>
+    <form method="GET" class="bg-karta border border-chegara rounded-xl p-4 mb-6">
+        <div class="flex flex-wrap gap-3 items-end">
+            <input type="text" name="search" class="flex-1 min-w-[200px] px-3 py-2 bg-fon3 border border-chegara rounded-lg text-matn placeholder-matn3 focus:outline-none focus:border-aksent focus:ring-2 focus:ring-aksent/20 transition-all duration-200" placeholder="🔍 Qidirish..." value="{{ request('search') }}">
+            <select name="role" class="px-3 py-2 bg-fon3 border border-chegara rounded-lg text-matn focus:outline-none focus:border-aksent focus:ring-2 focus:ring-aksent/20 transition-all duration-200">
+                <option value="">Barcha rollar</option>
+                <option value="user" {{ request('role') === 'user' ? 'selected' : '' }}>Foydalanuvchi</option>
+                <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
+            </select>
+            <select name="status" class="px-3 py-2 bg-fon3 border border-chegara rounded-lg text-matn focus:outline-none focus:border-aksent focus:ring-2 focus:ring-aksent/20 transition-all duration-200">
+                <option value="">Barcha holatlar</option>
+                <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Faol</option>
+                <option value="blocked" {{ request('status') === 'blocked' ? 'selected' : '' }}>Bloklangan</option>
+            </select>
+            <button type="submit" class="bg-fon3 hover:bg-fon2 text-matn px-4 py-2 rounded-lg transition-all duration-200">Filtr</button>
+            <a href="{{ route('admin.users.index') }}" class="bg-fon3 hover:bg-fon2 text-matn px-4 py-2 rounded-lg transition-all duration-200">Tozalash</a>
+        </div>
     </form>
 
-    <div class="karta">
-        <div class="jadval-wrapper">
-            <table>
-                <thead>
+    <div class="bg-karta border border-chegara rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-fon3 border-b border-chegara">
                     <tr>
-                        <th>#</th>
-                        <th>Ism-familiya</th>
-                        <th>Email</th>
-                        <th>Telefon</th>
-                        <th>Rol</th>
-                        <th>Holat</th>
-                        <th>Testlar</th>
-                        <th>Sana</th>
-                        <th>Amallar</th>
+                        <th class="text-left py-3 px-4 text-xs font-medium text-matn2">#</th>
+                        <th class="text-left py-3 px-4 text-xs font-medium text-matn2">Ism-familiya</th>
+                        <th class="text-left py-3 px-4 text-xs font-medium text-matn2">Email</th>
+                        <th class="text-left py-3 px-4 text-xs font-medium text-matn2">Telefon</th>
+                        <th class="text-left py-3 px-4 text-xs font-medium text-matn2">Rol</th>
+                        <th class="text-left py-3 px-4 text-xs font-medium text-matn2">Holat</th>
+                        <th class="text-left py-3 px-4 text-xs font-medium text-matn2">Testlar</th>
+                        <th class="text-left py-3 px-4 text-xs font-medium text-matn2">Sana</th>
+                        <th class="text-left py-3 px-4 text-xs font-medium text-matn2">Amallar</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($users as $i => $user)
-                        <tr>
-                            <td style="color:var(--matn2);">{{ $users->firstItem() + $i }}</td>
-                            <td>
-                                <div style="display:flex;align-items:center;gap:8px;">
-                                    <div
-                                        style="width:30px;height:30px;border-radius:50%;background:var(--aksent);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;">
+                        <tr class="border-b border-chegara/30 hover:bg-fon3/50 transition-colors">
+                            <td class="py-3 px-4 text-sm text-matn2">{{ $users->firstItem() + $i }}</td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-7 h-7 rounded-full bg-gradient-to-br from-aksent to-red-800 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
                                         {{ $user->initials }}
                                     </div>
-                                    {{ $user->name }}
+                                    <span class="text-sm text-matn">{{ $user->name }}</span>
                                 </div>
                             </td>
-                            <td style="color:var(--matn2);">{{ $user->email }}</td>
-                            <td style="color:var(--matn2);">{{ $user->phone ?? '—' }}</td>
-                            <td>
-                                <span class="chip {{ $user->role === 'admin' ? 'chip-moviy' : 'chip-sariq' }}">
+                            <td class="py-3 px-4 text-sm text-matn2">{{ $user->email }}</td>
+                            <td class="py-3 px-4 text-sm text-matn2">{{ $user->phone ?? '—' }}</td>
+                            <td class="py-3 px-4">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {{
+                                    $user->role === 'admin' ? 'bg-blue-500/20 text-blue-400' : 'bg-yellow-500/20 text-yellow-400'
+                                }}">
                                     {{ $user->role === 'admin' ? 'Admin' : 'Foydalanuvchi' }}
                                 </span>
                             </td>
-                            <td>
-                                <span class="chip {{ $user->status === 'active' ? 'chip-yashil' : 'chip-qizil' }}">
+                            <td class="py-3 px-4">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {{
+                                    $user->status === 'active' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+                                }}">
                                     {{ $user->status === 'active' ? '● Faol' : '● Bloklangan' }}
                                 </span>
                             </td>
-                            <td>{{ $user->completed_tests_count ?? 0 }} ta</td>
-                            <td style="color:var(--matn2);">{{ $user->created_at->format('d.m.Y') }}</td>
-                            <td>
-                                <div style="display:flex;gap:5px;">
-                                    <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-ikkinchi btn-sm">✏️</a>
-                                    <form action="{{ route('admin.users.toggle-status', $user) }}" method="POST"
-                                        style="display:inline;">
+                            <td class="py-3 px-4 text-sm text-matn">{{ $user->completed_tests_count ?? 0 }} ta</td>
+                            <td class="py-3 px-4 text-sm text-matn2">{{ $user->created_at->format('d.m.Y') }}</td>
+                            <td class="py-3 px-4">
+                                <div class="flex gap-1">
+                                    <a href="{{ route('admin.users.edit', $user) }}" class="bg-fon3 hover:bg-fon2 text-matn px-2 py-1 rounded text-sm transition-all duration-200" title="Tahrirlash">✏️</a>
+                                    <form action="{{ route('admin.users.toggle-status', $user) }}" method="POST" class="inline">
                                         @csrf @method('PATCH')
-                                        <button type="submit"
-                                            class="btn btn-sm {{ $user->status === 'active' ? 'btn-xavf' : 'btn-yashil' }}">
+                                        <button type="submit" class="{{
+                                            $user->status === 'active' 
+                                            ? 'bg-red-500/20 hover:bg-red-500/30 text-red-400' 
+                                            : 'bg-green-500/20 hover:bg-green-500/30 text-green-400'
+                                        }} px-2 py-1 rounded text-sm transition-all duration-200" title="{{
+                                            $user->status === 'active' ? 'Bloklangan' : 'Faollashtirish'
+                                        }}">
                                             {{ $user->status === 'active' ? '🚫' : '✅' }}
                                         </button>
                                     </form>
                                     @if ($user->id !== auth()->id())
-                                        <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
-                                            style="display:inline;"
+                                        <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline"
                                             onsubmit="return confirm('Rostdan ham o\'chirmoqchimisiz?')">
                                             @csrf @method('DELETE')
-                                            <button type="submit" class="btn btn-xavf btn-sm">🗑️</button>
+                                            <button type="submit" class="bg-red-500/20 hover:bg-red-500/30 text-red-400 px-2 py-1 rounded text-sm transition-all duration-200" title="O'chirish">🗑️</button>
                                         </form>
                                     @endif
                                 </div>
@@ -92,13 +100,14 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" style="text-align:center;padding:40px;color:var(--matn2);">Foydalanuvchilar
-                                topilmadi</td>
+                            <td colspan="9" class="text-center py-12 text-matn2">Foydalanuvchilar topilmadi</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-        {{ $users->appends(request()->query())->links() }}
+        <div class="p-4 border-t border-chegara">
+            {{ $users->appends(request()->query())->links() }}
+        </div>
     </div>
 @endsection

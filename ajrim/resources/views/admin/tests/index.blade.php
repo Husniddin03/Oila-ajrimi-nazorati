@@ -3,54 +3,60 @@
 @section('page-title', 'Testlar')
 
 @section('content')
-    <div class="section-sarlavha">
-        <h2>📋 Testlar</h2>
-        <a href="{{ route('admin.tests.create') }}" class="btn btn-asosiy">+ Yangi test</a>
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold text-matn flex items-center gap-2">📋 Testlar</h2>
+        <a href="{{ route('admin.tests.create') }}" class="bg-aksent hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all duration-200 transform hover:-translate-y-0.5">+ Yangi test</a>
     </div>
 
-    <div class="grid-3">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($tests as $test)
-            <div class="karta" style="position:relative;overflow:hidden;">
-                <div
-                    style="height:4px;position:absolute;top:0;left:0;right:0;background:{{ $test->color }};border-radius:12px 12px 0 0;">
-                </div>
-                <div style="margin-top:8px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
-                    <div style="font-size:2rem;">{{ $test->emoji }}</div>
-                    <div style="display:flex;gap:5px;flex-wrap:wrap;">
-                        <span class="chip {{ $test->is_active ? 'chip-yashil' : 'chip-qizil' }}">
-                            {{ $test->is_active ? '● Faol' : '● O\'chirilgan' }}
-                        </span>
+            <div class="bg-karta border border-chegara rounded-xl overflow-hidden hover:border-aksent/50 transition-all duration-200">
+                <div class="h-1 bg-gradient-to-r from-{{ $test->color }} to-{{ $test->color }}/80"></div>
+                <div class="p-5">
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <div class="text-3xl">{{ $test->emoji }}</div>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {{
+                                $test->is_active ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+                            }}">
+                                {{ $test->is_active ? '● Faol' : '● O\'chirilgan' }}
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div style="font-family:'Playfair Display',serif;font-size:1rem;margin:10px 0 6px;">{{ $test->title }}
-                </div>
-                <div style="font-size:.78rem;color:var(--matn2);margin-bottom:12px;line-height:1.5;">
-                    {{ Str::limit($test->description, 80) }}</div>
-                <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
-                    <span class="chip chip-moviy">❓ {{ $test->questions_count }} savol</span>
-                    <span class="chip chip-sariq">✅ {{ $test->results_count }} marta</span>
-                </div>
-                <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                    <a href="{{ route('admin.tests.questions.index', $test) }}" class="btn btn-yashil btn-sm">❓ Savollar</a>
-                    <a href="{{ route('admin.tests.edit', $test) }}" class="btn btn-ikkinchi btn-sm">✏️</a>
-                    <form action="{{ route('admin.tests.toggle-active', $test) }}" method="POST" style="display:inline;">
-                        @csrf @method('PATCH')
-                        <button type="submit" class="btn btn-sm {{ $test->is_active ? 'btn-xavf' : 'btn-yashil' }}">
-                            {{ $test->is_active ? '🔴 O\'chir' : '🟢 Yoq' }}
-                        </button>
-                    </form>
-                    <form action="{{ route('admin.tests.destroy', $test) }}" method="POST" style="display:inline;"
-                        onsubmit="return confirm('O\'chirishni tasdiqlaysizmi?')">
-                        @csrf @method('DELETE')
-                        <button type="submit" class="btn btn-xavf btn-sm">🗑️</button>
-                    </form>
+                    <h3 class="font-playfair text-lg text-matn mb-2">{{ $test->title }}</h3>
+                    <p class="text-sm text-matn2 mb-4 line-clamp-3 leading-relaxed">
+                        {{ Str::limit($test->description, 80) }}
+                    </p>
+                    <div class="flex gap-2 mb-4 flex-wrap">
+                        <span class="inline-flex items-center px-2 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs font-medium">❓ {{ $test->questions_count }} savol</span>
+                        <span class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-xs font-medium">✅ {{ $test->results_count }} marta</span>
+                    </div>
+                    <div class="flex gap-2 flex-wrap">
+                        <a href="{{ route('admin.tests.questions.index', $test) }}" class="bg-green-500/20 hover:bg-green-500/30 text-green-400 px-3 py-1.5 rounded-lg text-sm transition-all duration-200">❓ Savollar</a>
+                        <a href="{{ route('admin.tests.edit', $test) }}" class="bg-fon3 hover:bg-fon2 text-matn px-3 py-1.5 rounded-lg text-sm transition-all duration-200">✏️</a>
+                        <form action="{{ route('admin.tests.toggle-active', $test) }}" method="POST" class="inline">
+                            @csrf @method('PATCH')
+                            <button type="submit" class="{{
+                                $test->is_active 
+                                ? 'bg-red-500/20 hover:bg-red-500/30 text-red-400' 
+                                : 'bg-green-500/20 hover:bg-green-500/30 text-green-400'
+                            }} px-3 py-1.5 rounded-lg text-sm transition-all duration-200">
+                                {{ $test->is_active ? '🔴 O\'chir' : '🟢 Yoq' }}
+                            </button>
+                        </form>
+                        <form action="{{ route('admin.tests.destroy', $test) }}" method="POST" class="inline"
+                            onsubmit="return confirm('O\'chirishni tasdiqlaysizmi?')">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="bg-red-500/20 hover:bg-red-500/30 text-red-400 px-3 py-1.5 rounded-lg text-sm transition-all duration-200">🗑️</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         @empty
-            <div class="karta" style="grid-column:1/-1;text-align:center;padding:60px;color:var(--matn2);">
-                <div style="font-size:3rem;margin-bottom:12px;">📋</div>
-                Testlar mavjud emas. <a href="{{ route('admin.tests.create') }}" style="color:var(--aksent);">Yangi test
-                    yarating</a>
+            <div class="bg-karta border border-chegara rounded-xl p-12 text-center col-span-full">
+                <div class="text-5xl mb-3">📋</div>
+                <p class="text-matn2 mb-4">Testlar mavjud emas.</p>
+                <a href="{{ route('admin.tests.create') }}" class="bg-aksent hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all duration-200 transform hover:-translate-y-0.5">Yangi test yarating</a>
             </div>
         @endforelse
     </div>

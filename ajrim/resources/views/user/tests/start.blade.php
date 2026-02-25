@@ -1,131 +1,17 @@
 @extends('layouts.user')
 @section('title', $test->title)
-
-@push('styles')
-    <style>
-        .savol-karta {
-            background: var(--karta);
-            border-radius: var(--radius);
-            padding: 32px;
-            box-shadow: var(--soya);
-            border: 1px solid rgba(232, 226, 218, .6);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .savol-raqam {
-            font-size: .75rem;
-            color: var(--matn2);
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            margin-bottom: 8px;
-        }
-
-        .savol-matn {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 24px;
-            line-height: 1.5;
-        }
-
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: .78rem;
-            color: var(--matn2);
-            margin-bottom: 8px;
-        }
-
-        .scale-sarlavha {
-            display: flex;
-            justify-content: space-between;
-            font-size: .7rem;
-            color: var(--matn3);
-            margin-bottom: 8px;
-        }
-
-        .scale-qator {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            margin-bottom: 24px;
-        }
-
-        .scale-btn {
-            padding: 14px 6px;
-            border-radius: var(--radius2);
-            border: 2px solid var(--chegara);
-            background: var(--fon);
-            cursor: pointer;
-            transition: all .2s;
-            font-family: 'Jost', sans-serif;
-            font-size: .82rem;
-            font-weight: 500;
-            text-align: center;
-        }
-
-        .scale-btn:hover {
-            border-color: var(--asosiy);
-            background: rgba(45, 74, 62, .05);
-        }
-
-        .scale-btn.tanlandi {
-            border-color: var(--asosiy);
-            background: var(--asosiy);
-            color: #fff;
-        }
-
-        .scale-oy {
-            font-size: .65rem;
-            color: inherit;
-            display: block;
-            margin-top: 4px;
-            opacity: .8;
-        }
-
-        .nav-btnlar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 16px;
-        }
-
-        .savol-counter {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.1rem;
-            color: var(--matn2);
-        }
-
-        .savol-counter span {
-            color: var(--asosiy);
-            font-weight: 700;
-        }
-    </style>
-@endpush
+@section('page-title', $test->title)
 
 @section('content')
-    <div style="max-width:700px;margin:0 auto;">
-        <!-- HEADER -->
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
-            <div style="font-size:2rem;">{{ $test->emoji }}</div>
-            <div>
-                <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;">{{ $test->title }}
-                </div>
-                <div style="font-size:.8rem;color:var(--matn2);">{{ $test->activeQuestions->count() }} savol • ⏱️
-                    {{ $test->duration_minutes }} daqiqa</div>
-            </div>
-            <a href="{{ route('user.tests.index') }}" class="btn btn-ikkinchi" style="margin-left:auto;">← Orqaga</a>
-        </div>
-
+    <div class="max-w-3xl mx-auto">
         <!-- PROGRESS -->
-        <div style="margin-bottom:24px;">
-            <div class="progress-info">
+        <div class="mb-6">
+            <div class="flex justify-between items-center text-xs text-matn2 mb-2">
                 <span id="progressMatn">1 / {{ $test->activeQuestions->count() }}</span>
                 <span id="progressFoiz">0%</span>
             </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill" style="width:0;background:var(--asosiy);"></div>
+            <div class="w-full bg-fon3 h-2 rounded-full overflow-hidden">
+                <div class="h-full bg-aksent transition-all duration-300" id="progressFill" style="width: 0%"></div>
             </div>
         </div>
 
@@ -134,57 +20,65 @@
             @csrf
 
             @foreach ($test->activeQuestions as $index => $question)
-                <div class="savol-karta" id="savol-{{ $index }}" style="{{ $index > 0 ? 'display:none;' : '' }}">
-                    <div class="savol-raqam">Savol {{ $index + 1 }} / {{ $test->activeQuestions->count() }}</div>
-                    <div class="savol-matn">{{ $question->question_text }}</div>
+                <div class="bg-karta border border-chegara rounded-xl p-8 mb-6 {{ $index == 0 ? '' : 'hidden' }}" id="savol-{{ $index }}">
+                    <div class="text-xs text-matn2 font-medium tracking-wider uppercase mb-2">Savol {{ $index + 1 }} / {{ $test->activeQuestions->count() }}</div>
+                    <div class="font-playfair text-xl font-semibold text-matn mb-6 leading-relaxed">{{ $question->question_text }}</div>
 
                     @if ($question->question_type === 'scale')
-                        <div class="scale-sarlavha">
+                        <div class="flex justify-between text-xs text-matn3 mb-2">
                             <span>Umuman yo'q</span>
                             <span>Har doim</span>
                         </div>
-                        <div class="scale-qator">
+                        <div class="grid grid-cols-5 gap-2 mb-6">
                             @foreach ([1 => 'Umuman yo\'q', 2 => 'Kamdan-kam', 3 => 'Ba\'zan', 4 => 'Tez-tez', 5 => 'Har doim'] as $val => $label)
-                                <label class="scale-btn" onclick="scaleTanla(this, {{ $index }})">
-                                    <input type="radio" name="answers[{{ $question->id }}]" value="{{ $val }}"
-                                        style="display:none;">
-                                    <span
-                                        style="font-size:1.1rem;font-weight:700;display:block;">{{ $val }}</span>
-                                    <span class="scale-oy">{{ $label }}</span>
+                                <label class="block cursor-pointer" onclick="scaleTanla(this, {{ $index }})">
+                                    <input type="radio" name="answers[{{ $question->id }}]" value="{{ $val }}" class="hidden">
+                                    <div class="px-3.5 py-3.5 border-2 border-chegara rounded-lg bg-fon text-center transition-all duration-200 hover:border-aksent hover:bg-fon3">
+                                        <span class="text-lg font-bold block">{{ $val }}</span>
+                                        <span class="text-xs opacity-80 block mt-1">{{ $label }}</span>
+                                    </div>
                                 </label>
                             @endforeach
                         </div>
                     @elseif($question->question_type === 'single_choice')
-                        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">
+                        <div class="flex flex-col gap-2 mb-6">
                             @foreach ($question->options as $option)
-                                <label
-                                    style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:var(--radius2);border:2px solid var(--chegara);background:var(--fon);cursor:pointer;transition:all .2s;"
-                                    onclick="this.style.borderColor='var(--asosiy)';this.style.background='rgba(45,74,62,.05)'">
-                                    <input type="radio" name="answers[{{ $question->id }}]" value="{{ $option->value }}"
-                                        style="accent-color:var(--asosiy);">
+                                <label class="flex items-center gap-3 p-3 border-2 border-chegara rounded-lg bg-fon cursor-pointer transition-all duration-200 hover:border-aksent hover:bg-fon3" onclick="singleChoiceTanla(this, {{ $index }})">
+                                    <input type="radio" name="answers[{{ $question->id }}]" value="{{ $option->value }}" class="text-aksent">
                                     {{ $option->option_text }}
                                 </label>
                             @endforeach
                         </div>
+                    @elseif($question->question_type === 'multiple_choice')
+                        <div class="flex flex-col gap-2 mb-6">
+                            @foreach ($question->options as $option)
+                                <label class="flex items-center gap-3 p-3 border-2 border-chegara rounded-lg bg-fon cursor-pointer transition-all duration-200 hover:border-aksent hover:bg-fon3" onclick="multipleChoiceTanla(this, {{ $index }})">
+                                    <input type="checkbox" name="answers[{{ $question->id }}][]" value="{{ $option->value }}" class="text-aksent">
+                                    {{ $option->option_text }}
+                                </label>
+                            @endforeach
+                        </div>
+                    @elseif($question->question_type === 'text')
+                        <div class="mb-6">
+                            <textarea name="answers[{{ $question->id }}]" class="w-full px-4 py-3 bg-fon3 border border-chegara rounded-lg text-matn placeholder-matn3 focus:outline-none focus:border-aksent focus:ring-2 focus:ring-aksent/20 transition-all duration-200" rows="4" placeholder="Javobingizni bu yerga yozing..." oninput="textTanla(this, {{ $index }})"></textarea>
+                        </div>
                     @endif
 
-                    <div class="nav-btnlar">
+                    <div class="flex justify-between items-center">
                         @if ($index > 0)
-                            <button type="button" class="btn btn-ikkinchi"
-                                onclick="savolAlmashtir({{ $index - 1 }}, {{ $index }})">← Oldingi</button>
+                            <button type="button" class="bg-fon3 hover:bg-fon2 text-matn px-4 py-2 rounded-lg transition-all duration-200" onclick="savolAlmashtir({{ $index - 1 }}, {{ $index }})">← Oldingi</button>
                         @else
                             <div></div>
                         @endif
 
-                        <div class="savol-counter">
-                            <span>{{ $index + 1 }}</span> / {{ $test->activeQuestions->count() }}
+                        <div class="font-playfair text-lg text-matn2">
+                            <span class="text-aksent font-bold">{{ $index + 1 }}</span> / {{ $test->activeQuestions->count() }}
                         </div>
 
                         @if ($index < $test->activeQuestions->count() - 1)
-                            <button type="button" class="btn btn-asosiy"
-                                onclick="keyingi({{ $index }}, {{ $index + 1 }})">Keyingi →</button>
+                            <button type="button" class="bg-aksent hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all duration-200" onclick="keyingi({{ $index }}, {{ $index + 1 }})">Keyingi →</button>
                         @else
-                            <button type="submit" class="btn btn-aksent" id="submitBtn">🎯 Yakunlash</button>
+                            <button type="submit" class="bg-aksent hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all duration-200" id="submitBtn">🎯 Yakunlash</button>
                         @endif
                     </div>
                 </div>
@@ -199,13 +93,47 @@
         const javoblar = {};
 
         function scaleTanla(el, savolIdx) {
-            const qator = el.closest('.scale-qator');
-            qator.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('tanlandi'));
-            el.classList.add('tanlandi');
+            const qator = el.closest('.grid');
+            qator.querySelectorAll('label > div').forEach(b => b.classList.remove('border-aksent', 'bg-aksent/10'));
+            el.querySelector('div').classList.add('border-aksent', 'bg-aksent/10');
             el.querySelector('input').checked = true;
             const val = el.querySelector('input').value;
             javoblar[savolIdx] = val;
             progressYangi(savolIdx + 1);
+        }
+
+        function singleChoiceTanla(el, savolIdx) {
+            const qator = el.closest('.flex');
+            qator.querySelectorAll('label').forEach(b => b.classList.remove('border-aksent', 'bg-aksent/10'));
+            el.classList.add('border-aksent', 'bg-aksent/10');
+            el.querySelector('input').checked = true;
+            const val = el.querySelector('input').value;
+            javoblar[savolIdx] = val;
+            progressYangi(savolIdx + 1);
+        }
+
+        function multipleChoiceTanla(el, savolIdx) {
+            const checkbox = el.querySelector('input');
+            if (checkbox.checked) {
+                el.classList.add('border-aksent', 'bg-aksent/10');
+            } else {
+                el.classList.remove('border-aksent', 'bg-aksent/10');
+            }
+            
+            // Get all checked values
+            const qator = el.closest('.flex');
+            const checked = qator.querySelectorAll('input[type="checkbox"]:checked');
+            const values = Array.from(checked).map(cb => cb.value);
+            javoblar[savolIdx] = values;
+            progressYangi(savolIdx + 1);
+        }
+
+        function textTanla(el, savolIdx) {
+            const val = el.value;
+            if (val.trim()) {
+                javoblar[savolIdx] = val;
+                progressYangi(savolIdx + 1);
+            }
         }
 
         function savolAlmashtir(keyingiIdx, joriyIdx) {
@@ -216,9 +144,14 @@
 
         function keyingi(joriyIdx, keyingiIdx) {
             const joriy = document.getElementById('savol-' + joriyIdx);
-            const tanlandi = joriy.querySelector('input:checked');
-            if (!tanlandi) {
-                tost('Iltimos, javob tanlang!', 'err');
+            
+            // Check if question has answer
+            const radioChecked = joriy.querySelector('input[type="radio"]:checked');
+            const checkboxChecked = joriy.querySelector('input[type="checkbox"]:checked');
+            const textValue = joriy.querySelector('textarea')?.value?.trim();
+            
+            if (!radioChecked && !checkboxChecked && !textValue) {
+                alert('Iltimos, javob tanlang yoki yozing!');
                 return;
             }
             savolAlmashtir(keyingiIdx, joriyIdx);
@@ -243,7 +176,7 @@
             const javobBerilmagan = Object.values(savollar).filter(v => !v).length;
             if (javobBerilmagan > 0) {
                 e.preventDefault();
-                tost('Barcha savollarga javob bering!', 'err');
+                alert('Barcha savollarga javob bering!');
             }
         });
     </script>

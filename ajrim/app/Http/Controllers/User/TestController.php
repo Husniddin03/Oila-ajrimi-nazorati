@@ -57,10 +57,20 @@ class TestController extends Controller
         // Validate that all questions are answered
         $rules = [];
         foreach ($questions as $question) {
-            $rules["answers.{$question->id}"] = ['required'];
+            if ($question->question_type === 'multiple_choice') {
+                $rules["answers.{$question->id}"] = ['required', 'array'];
+                $rules["answers.{$question->id}.*"] = ['required', 'integer', 'min:1', 'max:5'];
+            } elseif ($question->question_type === 'text') {
+                $rules["answers.{$question->id}"] = ['required', 'string', 'min:1'];
+            } else {
+                // Scale and single choice
+                $rules["answers.{$question->id}"] = ['required', 'integer', 'min:1', 'max:5'];
+            }
         }
         $request->validate($rules, [
             'answers.*.required' => 'Barcha savollarga javob bering',
+            'answers.*.min' => 'Javob to\'g\'ri kiriting',
+            'answers.*.max' => 'Javob to\'g\'ri kiriting',
         ]);
 
         $answers = $request->input('answers', []);
@@ -76,19 +86,46 @@ class TestController extends Controller
         ]);
 
         foreach ($questions as $question) {
-            $value = $answers[$question->id] ?? 3;
+            $answer = $answers[$question->id] ?? null;
 
-            TestAnswer::create([
+            // Create answer data based on question type
+            $answerData = [
                 'test_result_id' => $result->id,
                 'question_id'    => $question->id,
-                'numeric_value'  => $value,
-            ]);
+            ];
+
+            if ($question->question_type === 'text') {
+                // Text question - save to text_answer column
+                $answerData['text_answer'] = $answer;
+                // For scoring, use default value 3 for text answers
+                $numericValue = 3;
+            } elseif ($question->question_type === 'multiple_choice') {
+                // Multiple choice - save as array or comma-separated
+                if (is_array($answer)) {
+                    $answerData['text_answer'] = implode(',', $answer);
+                    // Calculate average for scoring
+                    $numericValue = count($answer) > 0 ? array_sum($answer) / count($answer) : 3;
+                } else {
+                    $numericValue = 3;
+                }
+            } else {
+                // Scale or single choice - save to numeric_value
+                $numericValue = is_numeric($answer) ? (int)$answer : 3;
+                $answerData['numeric_value'] = $numericValue;
+            }
+
+            // Set numeric_value for non-text questions
+            if ($question->question_type !== 'text') {
+                $answerData['numeric_value'] = $numericValue;
+            }
+
+            TestAnswer::create($answerData);
 
             $tag = $question->category_tag ?? 'muloqot';
             if (isset($scores[$tag])) {
-                $scores[$tag][] = (int)$value;
+                $scores[$tag][] = (int)$numericValue;
             } else {
-                $scores['muloqot'][] = (int)$value;
+                $scores['muloqot'][] = (int)$numericValue;
             }
         }
 

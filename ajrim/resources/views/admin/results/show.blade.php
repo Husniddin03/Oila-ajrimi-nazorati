@@ -3,149 +3,148 @@
 @section('page-title', 'Natija tafsilotlari')
 
 @section('content')
-    <div class="section-sarlavha">
-        <h2>📊 Test natijasi</h2>
-        <div style="font-size:.82rem;color:var(--matn2);">
-            {{ $result->user->name }} - {{ $result->test->title }}
-        </div>
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold text-matn flex items-center gap-2">📊 Test natijasi</h2>
+        <div class="text-sm text-matn2">{{ $result->user->name }} - {{ $result->test->title }}</div>
     </div>
 
     <!-- ASOSIY MA'LUMOTLAR -->
-    <div class="karta" style="margin-bottom:20px;">
-        <h3 style="margin-bottom:15px;">👤 Foydalanuvchi ma'lumotlari</h3>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;">
+    <div class="bg-karta border border-chegara rounded-xl p-6 mb-6">
+        <h3 class="font-playfair text-lg text-matn mb-4">👤 Foydalanuvchi ma'lumotlari</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
-                <strong>Ism:</strong><br>
-                {{ $result->user->name }}
+                <strong class="text-sm text-matn2">Ism:</strong>
+                <div class="text-matn mt-1">{{ $result->user->name }}</div>
             </div>
             <div>
-                <strong>Email:</strong><br>
-                {{ $result->user->email }}
+                <strong class="text-sm text-matn2">Email:</strong>
+                <div class="text-matn mt-1">{{ $result->user->email }}</div>
             </div>
             @if($result->user->phone)
                 <div>
-                    <strong>Telefon:</strong><br>
-                    {{ $result->user->phone }}
+                    <strong class="text-sm text-matn2">Telefon:</strong>
+                    <div class="text-matn mt-1">{{ $result->user->phone }}</div>
                 </div>
             @endif
             <div>
-                <strong>Status:</strong><br>
-                <span class="chip {{ $result->user->status === 'active' ? 'chip-yashil' : 'chip-qizil' }}">
-                    {{ $result->user->status === 'active' ? '✅ Faol' : '❌ Bloklangan' }}
-                </span>
+                <strong class="text-sm text-matn2">Status:</strong>
+                <div class="mt-1">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {{
+                        $result->user->status === 'active' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+                    }}">
+                        {{ $result->user->status === 'active' ? '✅ Faol' : '❌ Bloklangan' }}
+                    </span>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- TEST MA'LUMOTLARI -->
-    <div class="karta" style="margin-bottom:20px;">
-        <h3 style="margin-bottom:15px;">📝 Test ma'lumotlari</h3>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;">
+    <div class="bg-karta border border-chegara rounded-xl p-6 mb-6">
+        <h3 class="font-playfair text-lg text-matn mb-4">📝 Test ma'lumotlari</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
-                <strong>Test nomi:</strong><br>
-                {{ $result->test->title }}
+                <strong class="text-sm text-matn2">Test nomi:</strong>
+                <div class="text-matn mt-1">{{ $result->test->title }}</div>
             </div>
             <div>
-                <strong>Boshlanish vaqti:</strong><br>
-                {{ $result->created_at->format('d.m.Y H:i') }}
+                <strong class="text-sm text-matn2">Boshlanish vaqti:</strong>
+                <div class="text-matn mt-1">{{ $result->created_at->format('d.m.Y H:i') }}</div>
             </div>
             <div>
-                <strong>Tugash vaqti:</strong><br>
-                {{ $result->completed_at->format('d.m.Y H:i') }}
+                <strong class="text-sm text-matn2">Tugash vaqti:</strong>
+                <div class="text-matn mt-1">{{ $result->completed_at->format('d.m.Y H:i') }}</div>
             </div>
             <div>
-                <strong> Sarflangan vaqt:</strong><br>
-                {{ $result->completed_at->diffInMinutes($result->created_at) }} daqiqa
+                <strong class="text-sm text-matn2">Sarflangan vaqt:</strong>
+                <div class="text-matn mt-1">{{ $result->completed_at->diffInMinutes($result->created_at) }} daqiqa</div>
             </div>
         </div>
     </div>
 
     <!-- BALLAR -->
-    <div class="karta" style="margin-bottom:20px;">
-        <h3 style="margin-bottom:15px;">🎯 Ballar</h3>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px;">
-            <div style="text-align:center;padding:15px;border:1px solid var(--moviy);border-radius:8px;">
-                <div style="font-size:1.5rem;font-weight:bold;color:var(--moviy);">
-                    {{ round($result->score_emotional) }}%
-                </div>
-                <div style="font-size:.875rem;color:var(--matn2);">Emotsional</div>
+    <div class="bg-karta border border-chegara rounded-xl p-6 mb-6">
+        <h3 class="font-playfair text-lg text-matn mb-4">🎯 Ballar</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="text-center p-4 border border-moviy rounded-lg">
+                <div class="text-2xl font-bold text-moviy mb-2">{{ round($result->score_emotional) }}%</div>
+                <div class="text-sm text-matn2">Emotsional</div>
             </div>
-            <div style="text-align:center;padding:15px;border:1px solid var(--sariq);border-radius:8px;">
-                <div style="font-size:1.5rem;font-weight:bold;color:var(--sariq);">
-                    {{ round($result->score_financial) }}%
-                </div>
-                <div style="font-size:.875rem;color:var(--matn2);">Moliyaviy</div>
+            <div class="text-center p-4 border border-sariq rounded-lg">
+                <div class="text-2xl font-bold text-sariq mb-2">{{ round($result->score_financial) }}%</div>
+                <div class="text-sm text-matn2">Moliyaviy</div>
             </div>
-            <div style="text-align:center;padding:15px;border:1px solid var(--yashil);border-radius:8px;">
-                <div style="font-size:1.5rem;font-weight:bold;color:var(--yashil);">
-                    {{ round($result->score_communication) }}%
-                </div>
-                <div style="font-size:.875rem;color:var(--matn2);">Muloqot</div>
+            <div class="text-center p-4 border border-yashil rounded-lg">
+                <div class="text-2xl font-bold text-yashil mb-2">{{ round($result->score_communication) }}%</div>
+                <div class="text-sm text-matn2">Muloqot</div>
             </div>
-            <div style="text-align:center;padding:15px;border:2px solid var(--bosh);border-radius:8px;background:var(--fon2);">
-                <div style="font-size:1.8rem;font-weight:bold;">
-                    {{ round($result->score_average) }}%
-                </div>
-                <div style="font-size:.875rem;color:var(--matn2);">O'rtacha</div>
+            <div class="text-center p-4 border-2 border-bosh rounded-lg bg-fon2">
+                <div class="text-3xl font-bold text-matn mb-2">{{ round($result->score_average) }}%</div>
+                <div class="text-sm text-matn2">O'rtacha</div>
             </div>
         </div>
         
-        <div style="margin-top:20px;text-align:center;">
-            <span class="chip {{ $result->risk_level === 'high' ? 'chip-qizil' : ($result->risk_level === 'low' ? 'chip-yashil' : 'chip-sariq') }}"
-                  style="font-size:1.1rem;padding:8px 16px;">
+        <div class="text-center mt-5">
+            <span class="inline-flex items-center px-4 py-2 rounded-full text-base font-medium {{
+                $result->risk_level === 'high' ? 'bg-red-500/20 text-red-400' : 
+                ($result->risk_level === 'low' ? 'bg-green-500/20 text-green-400' : 
+                'bg-yellow-500/20 text-yellow-400')
+            }}">
                 {{ $result->risk_emoji }} {{ $result->risk_label }}
             </span>
         </div>
     </div>
 
     <!-- JAVOBLAR -->
-    <div class="karta">
-        <h3 style="margin-bottom:15px;">📋 Javoblar tafsilotlari</h3>
+    <div class="bg-karta border border-chegara rounded-xl p-6">
+        <h3 class="font-playfair text-lg text-matn mb-4">📋 Javoblar tafsilotlari</h3>
         
         @forelse($result->answers as $answer)
-            <div style="margin-bottom:20px;padding:15px;border:1px solid var(--chiziq);border-radius:8px;">
-                <div style="margin-bottom:10px;">
-                    <strong>Savol {{ $loop->iteration }}:</strong>
-                    <p style="margin:5px 0;color:var(--matn1);">{{ $answer->question->question }}</p>
+            <div class="mb-5 p-4 border border-chiziq rounded-lg">
+                <div class="mb-3">
+                    <strong class="text-matn">Savol {{ $loop->iteration }}:</strong>
+                    <p class="mt-2 text-matn1">{{ $answer->question->question }}</p>
                 </div>
                 
-                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mb-3">
                     @foreach($answer->question->options as $option)
-                        <div style="padding:8px;border-radius:4px;{{ $option->id === $answer->option_id ? 'background:var(--moviy);color:white;' : 'background:var(--fon2);' }}">
+                        <div class="p-2 rounded-lg {{
+                            $option->id === $answer->option_id ? 'bg-moviy text-white' : 'bg-fon2'
+                        }}">
                             {{ $option->option_text }}
                             @if($option->id === $answer->question->correct_option_id)
-                                <span style="margin-left:5px;">✅</span>
+                                <span class="ml-2">✅</span>
                             @endif
                             @if($option->id === $answer->option_id)
-                                <span style="margin-left:5px;">👤</span>
+                                <span class="ml-2">👤</span>
                             @endif
                         </div>
                     @endforeach
                 </div>
                 
-                <div style="margin-top:8px;font-size:.875rem;color:var(--matn2);">
-                    To'g'ri javob: <span style="color:var(--yashil);font-weight:bold;">{{ $answer->question->correctOption->option_text ?? 'Noma\'lum' }}</span>
+                <div class="text-sm text-matn2">
+                    To'g'ri javob: <span class="text-yashil font-bold">{{ $answer->question->correctOption->option_text ?? 'Noma\'lum' }}</span>
                     @if($answer->option_id === $answer->question->correct_option_id)
-                        <span style="margin-left:10px;color:var(--yashil);">✅ To'g'ri</span>
+                        <span class="ml-3 text-yashil">✅ To'g'ri</span>
                     @else
-                        <span style="margin-left:10px;color:var(--qizil);">❌ Noto'g'ri</span>
+                        <span class="ml-3 text-aksent">❌ Noto'g'ri</span>
                     @endif
                 </div>
             </div>
         @empty
-            <div style="text-align:center;padding:40px;color:var(--matn2);">
+            <div class="text-center py-10 text-matn2">
                 Javoblar topilmadi
             </div>
         @endforelse
     </div>
 
     <!-- AMALLAR -->
-    <div style="margin-top:20px;display:flex;gap:10px;">
-        <a href="{{ route('admin.results.index') }}" class="btn btn-ikkinchi">⬅️ Orqaga</a>
+    <div class="flex gap-3 mt-6">
+        <a href="{{ route('admin.results.index') }}" class="bg-fon3 hover:bg-fon2 text-matn px-4 py-2.5 rounded-lg transition-all duration-200">⬅️ Orqaga</a>
         <form action="{{ route('admin.results.destroy', $result) }}" method="POST"
               onsubmit="return confirm('Natijani o\'chirishga ishonchingiz komilmi?')">
             @csrf @method('DELETE')
-            <button type="submit" class="btn btn-xavf">🗑️ O'chirish</button>
+            <button type="submit" class="bg-red-500/20 hover:bg-red-500/30 text-red-400 px-4 py-2.5 rounded-lg transition-all duration-200">🗑️ O'chirish</button>
         </form>
     </div>
 @endsection

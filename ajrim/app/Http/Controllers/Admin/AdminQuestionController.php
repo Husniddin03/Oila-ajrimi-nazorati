@@ -23,15 +23,21 @@ class AdminQuestionController extends Controller
 
     public function store(Request $request, Test $test)
     {
-        $validated = $request->validate([
+        $rules = [
             'question_text' => ['required', 'string'],
             'question_type' => ['required', 'in:scale,single_choice,multiple_choice,text'],
             'category_tag'  => ['nullable', 'in:emotsional,moliyaviy,muloqot'],
             'order'         => ['nullable', 'integer'],
-            'options'       => ['nullable', 'array'],
-            'options.*.text'  => ['required_with:options', 'string'],
-            'options.*.value' => ['required_with:options', 'integer', 'min:1', 'max:5'],
-        ]);
+        ];
+
+        // Only validate options for choice questions
+        if (in_array($request->question_type, ['single_choice', 'multiple_choice'])) {
+            $rules['options'] = ['required', 'array', 'min:2'];
+            $rules['options.*.text'] = ['required', 'string'];
+            $rules['options.*.value'] = ['required', 'integer', 'min:1', 'max:5'];
+        }
+
+        $validated = $request->validate($rules);
 
         $question = $test->questions()->create([
             'question_text' => $validated['question_text'],
